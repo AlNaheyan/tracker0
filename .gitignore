@@ -1,0 +1,17 @@
+# General
+.DS_Store
+
+# Java
+t0-backend/target/
+t0-backend/.idea/
+t0-backend/*.iml
+
+# Node
+tracker0-frontend/node_modules/
+tracker0-frontend/dist/
+
+# Env files
+tracker0-frontend/.env
+t0-backend/.env
+.env
+.env.*
