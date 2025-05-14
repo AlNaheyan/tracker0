@@ -56,7 +56,7 @@ function App() {
             <div className="sticky top-0 bg-white p-4 border-b border-gray-100 flex justify-between items-center z-10">
               <h2 className="text-xl font-bold text-gray-800 flex items-center">
                 <BriefcaseIcon className="h-5 w-5 mr-2 text-emerald-600" />
-                Add New Job Application
+                Add New Job
               </h2>
               <button onClick={closeModal} className="text-gray-500 hover:text-gray-700 transition-colors">
                 <XMarkIcon className="h-6 w-6" />
@@ -73,12 +73,6 @@ function App() {
           </div>
         </div>
       )}
-
-      <footer className="bg-white border-t border-gray-200 py-6 mt-12">
-        <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
-          tracker0 - Your personal job application tracker
-        </div>
-      </footer>
 
       <ToastContainer
         position="bottom-right"
