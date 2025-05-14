@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { toast } from "react-toastify"
 import {
   TrashIcon,
@@ -10,7 +10,7 @@ import {
   LinkIcon,
   BuildingOfficeIcon,
   ClockIcon,
-} from "@heroicons/react/24/outline"
+} from "@heroicons/react/24/solid"
 
 const statusColors = {
   APPLIED: { bg: "bg-blue-100", text: "text-blue-800", border: "border-blue-200" },
@@ -39,6 +39,8 @@ const formatDate = (dateString) => {
 export default function JobList() {
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [openDropdownId, setOpenDropdownId] = useState(null)
+  const dropdownRefs = useRef({})
 
   const fetchJobs = async () => {
     setLoading(true)
@@ -48,7 +50,7 @@ export default function JobList() {
       setJobs(data.reverse()) // newest first
     } catch (err) {
       console.error(err)
-      toast.error("Failed to fetch jobs ❌")
+      toast.error("Failed to fetch jobs, Please wait!")
     } finally {
       setLoading(false)
     }
@@ -61,119 +63,175 @@ export default function JobList() {
         method: "DELETE",
       })
       if (!res.ok) throw new Error()
-      toast.success("Job application deleted successfully")
+      toast.success("Job deleted successfully")
       setJobs(jobs.filter((job) => job.id !== id))
     } catch (err) {
       console.error(err)
-      toast.error("Failed to delete job application")
+      toast.error("Failed to delete job listing")
     }
   }
+
+  // Handle clicks outside of dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (openDropdownId !== null) {
+        const currentDropdownRef = dropdownRefs.current[openDropdownId]
+        if (currentDropdownRef && !currentDropdownRef.contains(event.target)) {
+          setOpenDropdownId(null)
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [openDropdownId])
 
   useEffect(() => {
     fetchJobs()
   }, [])
 
+  const toggleDropdown = (id) => {
+    setOpenDropdownId(openDropdownId === id ? null : id)
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary border-t-transparent"></div>
       </div>
     )
   }
 
   if (!jobs.length) {
     return (
-      <div className="bg-white rounded-xl shadow-md p-12 text-center border border-gray-100">
+      <div className="bg-card rounded-lg shadow-sm p-12 text-center border">
         <div className="flex justify-center mb-4">
-          <BriefcaseIcon className="h-16 w-16 text-gray-300" />
+          <BriefcaseIcon className="h-16 w-16 text-muted-foreground/30" />
         </div>
-        <h3 className="text-xl font-medium text-gray-700 mb-2">No job applications yet</h3>
-        <p className="text-gray-500 mb-6">Start tracking your job search by adding your first application</p>
-        <p className="text-sm text-gray-400">Click the "Add New Job" button to get started</p>
+        <h3 className="text-xl font-medium text-foreground mb-2">No job applications yet</h3>
+        <p className="text-muted-foreground mb-6">Start tracking your job search by adding your first application</p>
+        <p className="text-sm text-muted-foreground/70">Click the "Add New Job" button to get started</p>
       </div>
     )
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {jobs.map((job) => {
-        const statusStyle = statusColors[job.status] || statusColors.APPLIED
+    <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+      {/* Table Header */}
+      <div className="grid grid-cols-12 gap-4 p-4 bg-muted/50 border-b text-xs font-medium text-muted-foreground">
+        <div className="col-span-3">COMPANY & ROLE</div>
+        <div className="col-span-2">STATUS</div>
+        <div className="col-span-2">LOCATION</div>
+        <div className="col-span-2">APPLIED</div>
+        <div className="col-span-2">TYPE</div>
+        <div className="col-span-1 text-right">ACTIONS</div>
+      </div>
 
-        return (
-          <div
-            key={job.id}
-            className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative transition-all duration-200 hover:shadow-md group"
-          >
-            <div className="absolute top-4 right-4">
-              <button
-                onClick={() => handleDelete(job.id)}
-                className="text-gray-400 hover:text-red-500 transition-colors duration-200 opacity-0 group-hover:opacity-100"
-                aria-label="Delete job application"
-              >
-                <TrashIcon className="h-5 w-5" />
-              </button>
-            </div>
+      {/* Table Body */}
+      <div className="divide-y">
+        {jobs.map((job) => {
+          const statusStyle = statusColors[job.status] || statusColors.APPLIED
+          const dropdownId = `dropdown-${job.id}`
+          const isDropdownOpen = openDropdownId === dropdownId
 
-            <div className="flex items-start gap-4">
-              <div className={`rounded-lg p-3 ${statusStyle.bg} ${statusStyle.border}`}>
-                <BuildingOfficeIcon className={`h-6 w-6 ${statusStyle.text}`} />
+          return (
+            <div key={job.id} className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-muted/20 transition-colors">
+              {/* Company & Role */}
+              <div className="col-span-3 flex items-center gap-3">
+                <div className={`rounded-md p-1.5 ${statusStyle.bg} ${statusStyle.border} shrink-0`}>
+                  <BuildingOfficeIcon className={`h-5 w-5 ${statusStyle.text}`} />
+                </div>
+                <div>
+                  <h3 className="font-medium text-sm text-foreground">{job.companyName}</h3>
+                  <p className="text-xs text-muted-foreground">{job.role}</p>
+                </div>
               </div>
 
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-800">{job.companyName}</h3>
-                  <span
-                    className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusStyle.bg} ${statusStyle.text}`}
-                  >
-                    {job.status}
-                  </span>
-                </div>
+              {/* Status */}
+              <div className="col-span-2">
+                <span
+                  className={`inline-flex text-xs font-medium px-2.5 py-1 rounded-full ${statusStyle.bg} ${statusStyle.text}`}
+                >
+                  {job.status}
+                </span>
+              </div>
 
-                <p className="text-gray-700 font-medium mt-1">{job.role}</p>
+              {/* Location */}
+              <div className="col-span-2 flex items-center text-sm text-muted-foreground">
+                <MapPinIcon className="h-4 w-4 mr-1.5 text-muted-foreground/70 shrink-0" />
+                <span className="truncate">{job.location || "No location"}</span>
+              </div>
 
-                <div className="mt-4 space-y-2 text-sm">
-                  <div className="flex items-center text-gray-600">
-                    <MapPinIcon className="h-4 w-4 mr-2 text-gray-400" />
-                    {job.location || "No location specified"}
-                  </div>
+              {/* Applied Date */}
+              <div className="col-span-2 flex items-center text-sm text-muted-foreground">
+                <CalendarIcon className="h-4 w-4 mr-1.5 text-muted-foreground/70 shrink-0" />
+                <span>{formatDate(job.applicationDate)}</span>
+              </div>
 
-                  <div className="flex items-center text-gray-600">
-                    <CalendarIcon className="h-4 w-4 mr-2 text-gray-400" />
-                    Applied: {formatDate(job.applicationDate)}
-                  </div>
+              {/* Job Type */}
+              <div className="col-span-2 flex items-center text-sm text-muted-foreground">
+                {jobTypeIcons[job.jobType] || <BriefcaseIcon className="h-4 w-4 shrink-0" />}
+                <span className="ml-1.5 truncate">
+                  {job.jobType
+                    .replace("_", " ")
+                    .toLowerCase()
+                    .split(" ")
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")}
+                </span>
+              </div>
 
-                  <div className="flex items-center text-gray-600">
-                    {jobTypeIcons[job.jobType] || <BriefcaseIcon className="h-4 w-4" />}
-                    <span className="ml-2">{job.jobType.replace("_", " ").toLowerCase()}</span>
-                  </div>
-                </div>
-
+              {/* Actions */}
+              <div className="col-span-1 flex justify-end items-center gap-2">
                 {job.links?.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center mb-2">
-                      <LinkIcon className="h-4 w-4 mr-1 text-gray-400" />
-                      <span className="text-xs font-medium text-gray-500">Links</span>
-                    </div>
-                    <div className="space-y-1">
-                      {job.links.map((link, i) => (
-                        <a
-                          key={i}
-                          href={link.startsWith("http") ? link : `https://${link}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-emerald-600 hover:text-emerald-800 hover:underline text-sm block truncate transition-colors duration-200"
-                        >
-                          {link}
-                        </a>
-                      ))}
-                    </div>
+                  <div className="relative" ref={(el) => (dropdownRefs.current[dropdownId] = el)}>
+                    <button
+                      onClick={() => toggleDropdown(dropdownId)}
+                      className={`p-1.5 rounded-md transition-colors ${
+                        isDropdownOpen
+                          ? "text-primary bg-muted"
+                          : "text-muted-foreground hover:text-primary hover:bg-muted"
+                      }`}
+                    >
+                      <LinkIcon className="h-4 w-4 cursor-pointer" />
+                    </button>
+
+                    {/* Links Dropdown */}
+                    {isDropdownOpen && (
+                      <div className="absolute bg-white right-0 mt-1 w-64 bg-card rounded-md shadow-lg border px-3 py-2 z-10">
+                        <div className="text-xs font-medium text-muted-foreground mb-1.5">Links</div>
+                        <div className="space-y-1">
+                          {job.links.map((link, i) => (
+                            <a
+                              key={i}
+                              href={link.startsWith("http") ? link : `https://${link}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline cursor-pointer text-sm flex items-center gap-1.5"
+                            >
+                              <span className="truncate">{link}</span>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
+
+                <button
+                  onClick={() => handleDelete(job.id)}
+                  className="p-1.5 rounded-md text-muted-foreground cursor-pointer hover:text-red-600 hover:bg-zinc-100 transition-colors"
+                  aria-label="Delete job application"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
               </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
     </div>
   )
 }

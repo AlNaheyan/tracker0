@@ -65,12 +65,12 @@ export default function JobForm({ onSubmitSuccess }) {
 
       if (!res.ok) throw new Error("Failed to submit")
 
-      toast.success("Job application added successfully! ✅")
+      toast.success("Job listing added successfully!")
       setFormData(initialState)
       onSubmitSuccess?.()
     } catch (err) {
       console.error(err)
-      toast.error("Error submitting job application ❌")
+      toast.error("Error submitting job listing!")
     } finally {
       setLoading(false)
     }
@@ -79,9 +79,9 @@ export default function JobForm({ onSubmitSuccess }) {
   return (
     <form onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700 flex items-center">
-            <BuildingOfficeIcon className="h-4 w-4 mr-1 text-gray-500" />
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground flex items-center">
+            <BuildingOfficeIcon className="h-4 w-4 mr-1 text-muted-foreground" />
             Company Name
           </label>
           <input
@@ -90,13 +90,13 @@ export default function JobForm({ onSubmitSuccess }) {
             value={formData.companyName}
             onChange={handleChange}
             required
-            className="p-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700 flex items-center">
-            <BriefcaseIcon className="h-4 w-4 mr-1 text-gray-500" />
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground flex items-center">
+            <BriefcaseIcon className="h-4 w-4 mr-1 text-muted-foreground" />
             Role
           </label>
           <input
@@ -105,13 +105,13 @@ export default function JobForm({ onSubmitSuccess }) {
             value={formData.role}
             onChange={handleChange}
             required
-            className="p-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700 flex items-center">
-            <MapPinIcon className="h-4 w-4 mr-1 text-gray-500" />
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground flex items-center">
+            <MapPinIcon className="h-4 w-4 mr-1 text-muted-foreground" />
             Location
           </label>
           <input
@@ -120,13 +120,13 @@ export default function JobForm({ onSubmitSuccess }) {
             value={formData.location}
             onChange={handleChange}
             required
-            className="p-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700 flex items-center">
-            <CalendarIcon className="h-4 w-4 mr-1 text-gray-500" />
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground flex items-center">
+            <CalendarIcon className="h-4 w-4 mr-1 text-muted-foreground" />
             Application Date
           </label>
           <input
@@ -134,22 +134,22 @@ export default function JobForm({ onSubmitSuccess }) {
             type="date"
             value={formData.applicationDate}
             onChange={handleChange}
-            className="p-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700 flex items-center">
-            <ClockIcon className="h-4 w-4 mr-1 text-gray-500" />
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground flex items-center">
+            <ClockIcon className="h-4 w-4 mr-1 text-muted-foreground" />
             Job Type
           </label>
           <select
             name="jobType"
             value={formData.jobType}
             onChange={handleChange}
-            className="p-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {jobTypeOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -159,16 +159,16 @@ export default function JobForm({ onSubmitSuccess }) {
           </select>
         </div>
 
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-gray-700">Status</label>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Status</label>
           <div className="grid grid-cols-2 gap-2">
             {statusOptions.map((option) => (
               <label
                 key={option.value}
-                className={`flex items-center justify-center p-2 rounded-lg cursor-pointer border transition-all duration-200 ${
+                className={`flex items-center justify-center p-2 rounded-md cursor-pointer border transition-all duration-200 ${
                   formData.status === option.value
                     ? `${option.color} border-transparent`
-                    : "border-gray-300 hover:bg-gray-50"
+                    : "border-input hover:bg-accent hover:text-accent-foreground"
                 }`}
               >
                 <input
@@ -186,9 +186,9 @@ export default function JobForm({ onSubmitSuccess }) {
         </div>
       </div>
 
-      <div className="mt-6 space-y-1">
-        <label className="text-sm font-medium text-gray-700 flex items-center">
-          <LinkIcon className="h-4 w-4 mr-1 text-gray-500" />
+      <div className="mt-6 space-y-2">
+        <label className="text-sm font-medium text-foreground flex items-center">
+          <LinkIcon className="h-4 w-4 mr-1 text-muted-foreground" />
           Links (comma separated)
         </label>
         <input
@@ -196,16 +196,16 @@ export default function JobForm({ onSubmitSuccess }) {
           placeholder="e.g. https://job-posting.com, https://company.com"
           value={formData.links}
           onChange={handleChange}
-          className="p-2.5 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
-        <p className="text-xs text-gray-500 mt-1">Add job posting URL, company website, etc.</p>
+        <p className="text-xs text-muted-foreground mt-1">Add job posting URL, company website, etc.</p>
       </div>
 
       <div className="mt-8">
         <button
           type="submit"
           disabled={loading}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-lg w-full font-semibold transition-all duration-200 transform hover:scale-[1.01] disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none shadow-sm"
+          className="inline-flex bg-zinc-800 text-white cursor-pointer items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
         >
           {loading ? "Submitting..." : "Submit Job Application"}
         </button>
