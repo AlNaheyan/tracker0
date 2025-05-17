@@ -18,6 +18,11 @@ public class JobApplicationController {
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
 
+    @GetMapping("/")
+    public String home() {
+        return "Backend is running.";
+    }
+
     @GetMapping
     public List<JobApplication> getAllApplications() {
         return jobApplicationRepository.findAll();
